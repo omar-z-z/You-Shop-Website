@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>YouShop — Tablets & Laptops Accessories</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script
+      src="https://kit.fontawesome.com/086037f2a3.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <!-- Top announcement bar -->
+    <div class="topbar">
+      <div class="topbar__inner">
+        <div class="topbar__left">
+          <span>📞 (+800) 123 456 7890</span><span class="dot"></span>
+          <span>✉️ manager@shop.com</span><span class="dot"></span>
+          <span>📍 Location store</span><span class="dot"></span>
+          <a href="#">Blog</a><span class="dot"></span> <span>Guarantee</span
+          ><span class="dot"></span> <span>Payment</span
+          ><span class="dot"></span>
+          <span>Delivery</span>
+        </div>
+        <div class="topbar__right">
+          <a href="#">Register or Sign in</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+      <div class="container header__inner">
+        <a class="logo" href="#">
+          <span class="logo__mark">YOU</span>SHOP
+          <small>Description of your<br />online store</small>
+        </a>
+        <div class="search">
+          <input id="q" type="search" placeholder="Search for products…" />
+          <button id="searchBtn" class="btn btn--brand">Search</button>
+        </div>
+        <div class="header__links">
+          <strong>7 days a week</strong><br />from 8:00 am to 5:00 pm
+        </div>
+        <div class="wish">
+          <button
+            class="wishlist"
+            id="wishBtn"
+            type="button"
+            aria-label="Wishlist"
+          >
+            <i class="fa-regular fa-heart"></i>
+            <span class="wishlist__badge" id="wishQty">0</span>
+          </button>
+          <div class="wish__dropdown" id="wishDropdown">
+            <div class="wish__list" id="wishList"></div>
+          </div>
+        </div>
+
+        <div class="cart" aria-label="Cart">
+          <button id="cartBtn" class="cart__btn">
+            <span class="cart__icon">🛒</span>
+            <span>My cart</span>
+            <span class="cart__badge" id="cartQty">0</span>
+          </button>
+          <div class="cart__dropdown" id="cartDropdown">
+            <div id="cartList" class="cart__list"></div>
+            <div class="cart__footer">
+              <div>Total: <strong id="cartTotal">$0.00</strong></div>
+              <button class="btn btn--brand btn--full">Checkout</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Category navbar -->
+    <div class="categorybar">
+      <div class="container categorybar__inner">
+        <button class="catbtn" id="allCats">☰ All Categories</button>
+        <ul class="brandnav" id="brandNav">
+          <li><a href="#" data-brand="Apple">Apple</a></li>
+          <li><a href="#" data-brand="Samsung">Samsung</a></li>
+          <li><a href="#" data-brand="Xiaomi">Xiaomi</a></li>
+          <li><a href="#" data-brand="Honor">Honor</a></li>
+          <li><a href="#" data-brand="Huawei">Huawei</a></li>
+          <li><a href="#" data-brand="Asus">Asus</a></li>
+          <li><a href="#" data-brand="Nokia">Nokia</a></li>
+          <li><a href="#" data-brand="Lenovo">Lenovo</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Breadcrumbs -->
+    <div class="container">
+      <nav class="breadcrumbs">
+        <a href="#">Home</a>
+        <span>›</span>
+        <a href="#">Categories</a>
+        <span>›</span>
+        <a href="#">Tablet & Laptops Accessories</a>
+      </nav>
+      <h2 class="page-title">Tablet & Laptops Accessories</h2>
+    </div>
+
+    <!-- Main layout -->
+    <div class="container layout">
+      <!-- Sidebar -->
+      <aside class="filters">
+        <details class="filter" open>
+          <summary>Related Categories</summary>
+          <span>&nbsp;> Categories</span>
+          <ul class="link-list">
+            <li><a href="#">Tablet & Laptops Accessories</a></li>
+          </ul>
+        </details>
+
+        <details class="filter" open>
+          <summary>Refine by</summary>
+          <div id="activeChips" class="chips"></div>
+          <button id="clearAll" type="button" class="clear">Clear All</button>
+        </details>
+
+        <details class="filter" open>
+          <summary>Price</summary>
+          <div class="range">
+            <div class="range-slider">
+              <span class="range-selected"></span>
+            </div>
+            <div class="range-input">
+              <input
+                type="range"
+                class="min"
+                min="0"
+                max="1000"
+                value="100"
+                step="10"
+              />
+              <input
+                type="range"
+                class="max"
+                min="0"
+                max="1000"
+                value="900"
+                step="10"
+              />
+            </div>
+            <div class="range-price">
+              <label for="minPrice">Min</label>
+              <input id="minPrice" type="number" name="min" value="100" />
+              <label for="maxPrice">Max</label>
+              <input id="maxPrice" type="number" name="max" value="900" />
+            </div>
+          </div>
+        </details>
+
+        <details class="filter" open>
+          <summary>Brand</summary>
+          <div id="facetBrand" class="check-list"></div>
+        </details>
+
+        <details class="filter" open>
+          <summary>Operating System</summary>
+          <div class="check-list" data-group="os">
+            <label class="check"
+              ><input type="checkbox" name="os" value="Android" /><span
+                >Android</span
+              ></label
+            >
+            <label class="check"
+              ><input type="checkbox" name="os" value="iOS" /><span
+                >iOS</span
+              ></label
+            >
+            <label class="check"
+              ><input type="checkbox" name="os" value="Windows" /><span
+                >Windows</span
+              ></label
+            >
+          </div>
+        </details>
+
+        <details class="filter" open>
+          <summary>Screen size</summary>
+          <div class="check-list" data-group="screen">
+            <label class="check"
+              ><input type="checkbox" value="1920x1200" /><span
+                >1920x1200</span
+              ></label
+            >
+            <label class="check"
+              ><input type="checkbox" value="1280x800" /><span
+                >1280x800</span
+              ></label
+            >
+            <label class="check"
+              ><input type="checkbox" value="2560x1600" /><span
+                >2560x1600</span
+              ></label
+            >
+            <label class="check"
+              ><input type="checkbox" value="2048x1536" /><span
+                >2048x1536</span
+              ></label
+            >
+            <label class="check"
+              ><input type="checkbox" value="1920x1080" /><span
+                >1920x1080</span
+              ></label
+            >
+            <label class="check"
+              ><input type="checkbox" value="1024x600" /><span
+                >1024x600</span
+              ></label
+            >
+          </div>
+        </details>
+
+        <details class="filter">
+          <summary>Tablet Data Capacity</summary>
+          <div class="check-list" data-group="capacity">
+            <label class="check"
+              ><input type="checkbox" name="storage" value="32" /><span
+                >32GB</span
+              ></label
+            >
+            <label class="check"
+              ><input type="checkbox" name="storage" value="64" /><span
+                >64GB</span
+              ></label
+            >
+            <label class="check"
+              ><input type="checkbox" name="storage" value="128" /><span
+                >128GB</span
+              ></label
+            >
+            <label class="check"
+              ><input type="checkbox" name="storage" value="256" /><span
+                >256GB</span
+              ></label
+            >
+          </div>
+        </details>
+
+        <details class="filter">
+          <summary>Processor Core</summary>
+          <div class="check-list" data-group="core">
+            <label class="check"
+              ><input type="checkbox" value="Quad-core" /><span
+                >Quad-core</span
+              ></label
+            >
+            <label class="check"
+              ><input type="checkbox" value="Octa-core" /><span
+                >Octa-core</span
+              ></label
+            >
+          </div>
+        </details>
+
+        <div>
+          <h3>Product tag</h3>
+          <div class="chips chips--static">
+            <span class="chip">Asus tablet</span>
+            <span class="chip">Windows tablet</span>
+            <span class="chip">Xiaomi tablet</span>
+            <span class="chip chip--hover">Hover</span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Content -->
+      <section class="content">
+        <div class="content__top">
+          <div id="resultsCount">Showing 0 results</div>
+          <div class="sort">
+            <label for="sort">Sort by:</label>
+            <select id="sort">
+              <option value="pop">Most popular</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+              <option value="rating-desc">Rating: High to Low</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="grid" class="grid"></div>
+
+        <div class="loadmore">
+          <button id="showMore" class="btn btn--ghost">Show more</button>
+        </div>
+
+        <nav class="pagination" aria-label="Pagination">
+          <button class="page prev" id="prevPage" aria-label="Previous">
+            ‹
+          </button>
+          <div id="pageNums" class="page__nums"></div>
+          <button class="page next" id="nextPage" aria-label="Next">›</button>
+        </nav>
+
+        <section class="recent">
+          <h3>Recently Viewed</h3>
+          <div id="recentRow" class="recent__row"><!-- inject here --></div>
+        </section>
+      </section>
+    </div>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="keywords">
+          <strong>Most Search Keywords</strong>
+
+          <div class="kw-row">
+            <span class="kw-hd">Laptops:</span>
+            <a class="kw" href="#">Apple Laptop</a>
+            <a class="kw" href="#">Acer Laptop</a>
+            <a class="kw" href="#">Samsung Laptop</a>
+            <a class="kw" href="#">Lenovo Laptop</a>
+            <a class="kw" href="#">Sony Laptop</a>
+            <a class="kw" href="#">Dell Laptop</a>
+            <a class="kw" href="#">Asus Laptop</a>
+            <a class="kw" href="#">Toshiba Laptop</a>
+            <a class="kw" href="#">LG Laptop</a>
+            <a class="kw" href="#">HP Laptop</a>
+          </div>
+
+          <div class="kw-row">
+            <span class="kw-hd">Tablet:</span>
+            <a class="kw" href="#">FUKIO Watches</a>
+            <a class="kw" href="#">Titan Watches</a>
+            <a class="kw" href="#">Casio Watches</a>
+            <a class="kw" href="#">Fastrack Watches</a>
+            <a class="kw" href="#">Timex Watches</a>
+            <a class="kw" href="#">Fossil Watches</a>
+            <a class="kw" href="#">Dieselo Watches</a>
+            <a class="kw" href="#">Toshiba Watches</a>
+            <a class="kw" href="#">Luxury Watches</a>
+          </div>
+
+          <div class="kw-row">
+            <span class="kw-hd">Mobile phone:</span>
+            <a class="kw" href="#">Shoes</a>
+            <a class="kw" href="#">Casual Shoes</a>
+            <a class="kw" href="#">Sports Shoes</a>
+            <a class="kw" href="#">Adidas Shoes</a>
+            <a class="kw" href="#">Gas Shoes</a>
+            <a class="kw" href="#">Puma Shoes</a>
+            <a class="kw" href="#">Reebok Shoes</a>
+            <a class="kw" href="#">Woodland Shoes</a>
+            <a class="kw" href="#">Red Tape Shoes</a>
+            <a class="kw" href="#">Nikeo Shoes</a>
+          </div>
+        </div>
+        <div class="copy">© 2025 YouShop. For demo purposes only.</div>
+      </div>
+      <div class="container footer__top">
+        <div class="newsletter">
+          <h3>Subscribe now</h3>
+          <p>
+            Put you email down so we can contact you if there is any changes or
+            updates.
+          </p>
+          <form class="newsletter__form">
+            <input type="email" placeholder="Your E-mail address..." />
+            <button class="btn btn--brand" type="submit">➤</button>
+          </form>
+        </div>
+        <div class="links">
+          <div>
+            <h4>Contact us</h4>
+            <a href="tel:+8001234567890">(+800) 123 456 7890</a>
+            <a href="mailto:manager@shop.com">manager@shop.com</a>
+            <a href="#">Location store</a>
+          </div>
+
+          <div>
+            <h4>Policies & Info</h4>
+            <a href="#">Terms Conditions</a>
+            <a href="#">Policy for Sellers</a>
+            <a href="#">Policy for Buyers</a>
+            <a href="#">Shipping & Refund</a>
+            <a href="#">Wholesale Policy</a>
+          </div>
+
+          <div>
+            <h4>Quick Links</h4>
+            <a href="#">Seller Login</a>
+            <a href="#">Seller Sign up</a>
+            <a href="#">Seller Handbook</a>
+            <a href="#">Seller Control</a>
+            <a href="#">Panel Seller FAQs</a>
+          </div>
+
+          <div>
+            <h4>My account</h4>
+            <a href="#">Accessories</a>
+            <a href="#">Balcony Tabl</a>
+            <a href="#">Bar Units</a>
+            <a href="#">Beds</a>
+            <a href="#">Bedside Tables</a>
+          </div>
+        </div>
+      </div>
+      <div class="container footer__bottom">
+        <div class="container footer__bottom-row">
+          <span>© 2025 YOUSHOP. All rights reserved.</span>
+          <div class="cards">
+            <i class="fa-brands fa-bitcoin"></i>
+            <i class="fa-brands fa-paypal"></i>
+            <i class="fa-brands fa-cc-visa"></i>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
