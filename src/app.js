@@ -1,4 +1,3 @@
-// app.js
 // ========== Utilities ==========
 const $ = (q, el = document) => el.querySelector(q);
 const $$ = (q, el = document) => Array.from(el.querySelectorAll(q));

@@ -1,4 +1,3 @@
-/* styles.css */
 /* =========== Base =========== */
 :root {
   --bg: #fff;
@@ -730,6 +729,7 @@ a {
   gap: 10px;
   overflow: auto;
   padding-bottom: 6px;
+  overflow: hidden;
 }
 .recent .card {
   min-width: 240px;
