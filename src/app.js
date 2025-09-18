@@ -1,8 +1,10 @@
-// Minimal data-driven category page
+// app.js
+// ========== Utilities ==========
 const $ = (q, el = document) => el.querySelector(q);
 const $$ = (q, el = document) => Array.from(el.querySelectorAll(q));
+const fmt = (n) => "$" + n.toFixed(2);
 
-// --- Mock catalog ---
+// ========== Mock catalog ==========
 const PRODUCTS = [
   {
     id: 1,
@@ -184,15 +186,15 @@ const PRODUCTS = [
 // Derived brand facet
 const BRANDS = [...new Set(PRODUCTS.map((p) => p.brand))].sort();
 
-// Pagination state
+// ========== State ==========
 let page = 1;
 const PER_PAGE = 9;
 let filtered = PRODUCTS.slice();
-
-// Recently viewed
 let recently = [];
+const CART = [];
+const LIKES = new Set();
 
-// --- Helpers ---
+// ========== Helpers ==========
 function placeholderSvg(text) {
   const safe = String(text).replace(
     /[&<>]/g,
@@ -200,10 +202,8 @@ function placeholderSvg(text) {
   );
   return `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" aria-hidden="true" focusable="false">
-    <defs>
-      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0" stop-color="#e5e7eb"/><stop offset="1" stop-color="#f3f4f6"/>
-      </linearGradient>
+    <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e5e7eb"/><stop offset="1" stop-color="#f3f4f6"/></linearGradient>
     </defs>
     <rect width="100%" height="100%" fill="url(#g)"/>
     <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
@@ -211,7 +211,6 @@ function placeholderSvg(text) {
   </svg>`;
 }
 
-const fmt = (n) => "$" + n.toFixed(2);
 function toast(msg) {
   const t = document.getElementById("toast");
   t.textContent = msg;
@@ -223,16 +222,15 @@ function toast(msg) {
   }, 1400);
 }
 
-// --- Renderers ---
-function renderBrandFacet() {
-  const box = $("#facetBrand");
-  if (!box) return;
-  box.innerHTML = BRANDS.map(
-    (b) =>
-      `<label class="check"><input type="checkbox" name="brand" value="${b}"><span>${b}</span></label>`
-  ).join("");
+function updateCategoryActive(brand) {
+  const allBtn = document.getElementById("allCats");
+  if (allBtn) allBtn.classList.toggle("active", !brand);
+  document.querySelectorAll("#brandNav a").forEach((a) => {
+    a.classList.toggle("active", a.dataset.brand === brand);
+  });
 }
 
+// ========== Renderers ==========
 function productCard(p) {
   const stars = Math.round(p.rating);
   return `<article class="card" data-id="${p.id}">
@@ -244,15 +242,21 @@ function productCard(p) {
     </div>
     <a href="#" class="title">${p.title}</a>
     <div class="meta">${p.brand} • ${p.os} • ${p.storage}GB</div>
-    <div class="rating"><span class="stars">${"★".repeat(stars)}</span><span>(${p.reviews})</span></div>
+    <div class="rating"><span class="stars">${"★".repeat(stars)}</span><span>(${
+    p.reviews
+  })</span></div>
     <div class="price">
       <div class="price__new">${fmt(p.price)}</div>
       ${p.old ? `<div class="price__old">${fmt(p.old)}</div>` : ""}
     </div>
     <div class="add">
-      <button class="btn btn--brand" data-add="${p.id}">Add to cart</button>
-      <button class="btn btn--icon like-btn" data-like="${p.id}" aria-pressed="false" title="Add to wishlist">
-        <i class="fa-regular fa-heart"></i>
+      <button class="btn btn--brand" data-add="${
+        p.id
+      }" type="button">Add to cart</button>
+      <button class="btn btn--icon like-btn" data-like="${
+        p.id
+      }" aria-pressed="false" title="Add to wishlist" type="button">
+        <i class="fa-regular fa-heart" aria-hidden="true"></i>
       </button>
     </div>
   </article>`;
@@ -263,11 +267,13 @@ function renderGrid() {
   const start = (page - 1) * PER_PAGE;
   const slice = filtered.slice(start, start + PER_PAGE);
   grid.innerHTML = slice.map(productCard).join("");
+
   $(
     "#resultsCount"
   ).textContent = `Showing ${slice.length} of ${filtered.length} results`;
   $("#showMore").style.display =
     start + PER_PAGE < filtered.length ? "inline-grid" : "none";
+
   renderPagination();
   updateLikesUI();
   renderLikesDropdown();
@@ -277,6 +283,7 @@ function renderPagination() {
   const pages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
   const nums = $("#pageNums");
   nums.innerHTML = "";
+
   for (let i = 1; i <= pages && i <= 6; i++) {
     const b = document.createElement("button");
     b.className = "page" + (i === page ? " active" : "");
@@ -287,6 +294,7 @@ function renderPagination() {
     });
     nums.appendChild(b);
   }
+
   $("#prevPage").onclick = () => {
     if (page > 1) {
       page--;
@@ -317,7 +325,7 @@ function renderRecent() {
     .join("");
 }
 
-// --- Filters & sorting ---
+// ========== Filters & sorting ==========
 function applyFilters() {
   const brands = $$("input[name=brand]:checked").map((i) => i.value);
   const os = $$("input[name=os]:checked").map((i) => i.value);
@@ -342,14 +350,6 @@ function applyFilters() {
   renderGrid();
 }
 
-function updateCategoryActive(brand){
-  const allBtn = document.getElementById('allCats');
-  if (allBtn) allBtn.classList.toggle('active', !brand);
-  document.querySelectorAll('#brandNav a').forEach(a=>{
-    a.classList.toggle('active', a.dataset.brand === brand);
-  });
-}
-
 function applySort() {
   const s = $("#sort").value;
   const cmp = {
@@ -361,8 +361,7 @@ function applySort() {
   filtered.sort(cmp);
 }
 
-// --- Cart ---
-const CART = [];
+// ========== Cart ==========
 function addToCart(id) {
   const f = CART.find((x) => x.id === id);
   if (f) f.qty += 1;
@@ -370,18 +369,21 @@ function addToCart(id) {
   updateCartUI();
   toast("Added to cart");
 }
+
 function updateCartUI() {
   const qty = CART.reduce((s, i) => s + i.qty, 0);
   $("#cartQty").textContent = qty;
+
   const list = $("#cartList");
   list.innerHTML = CART.map((item) => {
     const p = PRODUCTS.find((x) => x.id === item.id);
     return `<div class="cart__item">
       <div class="cart__thumb">IMG</div>
       <div>${p.title}<div class="meta">${item.qty} × ${fmt(p.price)}</div></div>
-      <button class="btn btn--sm" data-rem="${p.id}">–</button>
+      <button class="btn btn--sm" data-rem="${p.id}" type="button">–</button>
     </div>`;
   }).join("");
+
   $("#cartTotal").textContent = fmt(
     CART.reduce((s, i) => {
       const p = PRODUCTS.find((x) => x.id === i.id);
@@ -389,6 +391,7 @@ function updateCartUI() {
     }, 0)
   );
 }
+
 function removeFromCart(id) {
   const idx = CART.findIndex((x) => x.id === id);
   if (idx > -1) {
@@ -398,69 +401,74 @@ function removeFromCart(id) {
   }
 }
 
-const LIKES = new Set();
-
-function updateLikesUI(){
-  const el = document.getElementById('wishQty');
+// ========== Likes (wishlist) ==========
+function updateLikesUI() {
+  const el = document.getElementById("wishQty");
   if (el) el.textContent = LIKES.size;
-  // sync heart buttons currently in the DOM
-  document.querySelectorAll('[data-like]').forEach(b=>{
+
+  document.querySelectorAll("[data-like]").forEach((b) => {
     const id = +b.dataset.like;
     const active = LIKES.has(id);
-    b.classList.toggle('active', active);
-    b.setAttribute('aria-pressed', String(active));
-    const i = b.querySelector('i');
-    if (i) i.className = active ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
+    b.classList.toggle("active", active);
+    b.setAttribute("aria-pressed", String(active));
+    const i = b.querySelector("i");
+    if (i) i.className = active ? "fa-solid fa-heart" : "fa-regular fa-heart";
   });
 }
-function toggleLike(id){
+
+function toggleLike(id) {
   LIKES.has(id) ? LIKES.delete(id) : LIKES.add(id);
   updateLikesUI();
   renderLikesDropdown();
 }
 
-function renderLikesDropdown(){
-  const list = document.getElementById('wishList');
+function renderLikesDropdown() {
+  const list = document.getElementById("wishList");
   if (!list) return;
-  if (!LIKES.size){
+
+  if (!LIKES.size) {
     list.innerHTML = `<div class="wish__empty">No liked items yet</div>`;
     return;
   }
-  list.innerHTML = Array.from(LIKES).map(id=>{
-    const p = PRODUCTS.find(x=>x.id===id);
-    return `<div class="wish__item">
+
+  list.innerHTML = Array.from(LIKES)
+    .map((id) => {
+      const p = PRODUCTS.find((x) => x.id === id);
+      return `<div class="wish__item">
       <div class="wish__thumb">IMG</div>
       <div>${p.title}<div class="meta">${fmt(p.price)}</div></div>
-      <button class="btn btn--sm" data-unlike="${p.id}" aria-label="Remove">×</button>
+      <button class="btn btn--sm" data-unlike="${
+        p.id
+      }" aria-label="Remove" type="button">×</button>
     </div>`;
-  }).join("");
+    })
+    .join("");
 }
 
-
-// --- Events ---
+// ========== Events ==========
 document.addEventListener("click", (e) => {
   const add = e.target.closest("[data-add]");
   const like = e.target.closest("[data-like]");
   const rem = e.target.closest("[data-rem]");
+  const unlike = e.target.closest("[data-unlike]");
   const card = e.target.closest(".card");
 
-  if (add){ addToCart(+add.dataset.add); e.stopPropagation(); return; }
-  if (like){ toggleLike(+like.dataset.like); e.stopPropagation(); return; }
-  if (rem){ removeFromCart(+rem.dataset.rem); e.stopPropagation(); return; }
-
-  if (card){
-    // toggle open state (one open at a time)
-    const alreadyOpen = card.classList.contains('card--open');
-    document.querySelectorAll('.card.card--open').forEach(c=>c.classList.remove('card--open'));
-    if (!alreadyOpen) card.classList.add('card--open');
-
-    // mark as viewed and update "recently"
-    card.classList.add('card--viewed');
-    const id = +card.dataset.id;
-    if (!recently.includes(id)){ recently.push(id); renderRecent(); }
+  if (add) {
+    addToCart(+add.dataset.add);
+    e.stopPropagation();
+    return;
   }
-  const unlike = e.target.closest('[data-unlike]');
-  if (unlike){
+  if (like) {
+    toggleLike(+like.dataset.like);
+    e.stopPropagation();
+    return;
+  }
+  if (rem) {
+    removeFromCart(+rem.dataset.rem);
+    e.stopPropagation();
+    return;
+  }
+  if (unlike) {
     LIKES.delete(+unlike.dataset.unlike);
     updateLikesUI();
     renderLikesDropdown();
@@ -468,26 +476,41 @@ document.addEventListener("click", (e) => {
     return;
   }
 
-});
+  if (card) {
+    const alreadyOpen = card.classList.contains("card--open");
+    document
+      .querySelectorAll(".card.card--open")
+      .forEach((c) => c.classList.remove("card--open"));
+    if (!alreadyOpen) card.classList.add("card--open");
 
-
-document.getElementById('wishBtn').addEventListener('click', (e)=>{
-  e.stopPropagation();
-  const dd = document.getElementById('wishDropdown');
-  renderLikesDropdown();
-  dd.style.display = dd.style.display === 'block' ? 'none' : 'block';
-});
-// click outside closes it
-document.addEventListener('click', (e)=>{
-  if (!e.target.closest('.wish')){
-    const dd = document.getElementById('wishDropdown');
-    if (dd) dd.style.display = 'none';
+    card.classList.add("card--viewed");
+    const id = +card.dataset.id;
+    if (!recently.includes(id)) {
+      recently.push(id);
+      renderRecent();
+    }
   }
 });
 
-// search (client-side)
-$("#searchBtn").addEventListener("click", () => {
-  const q = $("#q").value.toLowerCase().trim();
+// wishlist dropdown toggle
+document.getElementById("wishBtn").addEventListener("click", (e) => {
+  e.stopPropagation();
+  const dd = document.getElementById("wishDropdown");
+  renderLikesDropdown();
+  dd.style.display = dd.style.display === "block" ? "none" : "block";
+});
+
+// close wishlist on outside click
+document.addEventListener("click", (e) => {
+  if (!e.target.closest(".wish")) {
+    const dd = document.getElementById("wishDropdown");
+    if (dd) dd.style.display = "none";
+  }
+});
+
+// search
+document.getElementById("searchBtn").addEventListener("click", () => {
+  const q = document.getElementById("q").value.toLowerCase().trim();
   filtered = PRODUCTS.filter(
     (p) =>
       p.title.toLowerCase().includes(q) || p.brand.toLowerCase().includes(q)
@@ -498,18 +521,19 @@ $("#searchBtn").addEventListener("click", () => {
 });
 
 // cart dropdown
-$("#cartBtn").addEventListener("click", () => {
-  const dd = $("#cartDropdown");
+document.getElementById("cartBtn").addEventListener("click", () => {
+  const dd = document.getElementById("cartDropdown");
   dd.style.display = dd.style.display === "block" ? "none" : "block";
 });
 
 // brand quick filter via navbar
-$("#brandNav").addEventListener("click", (e) => {
-   const a = e.target.closest('a[data-brand]');
+document.getElementById("brandNav").addEventListener("click", (e) => {
+  const a = e.target.closest("a[data-brand]");
   if (!a) return;
   e.preventDefault();
   const brand = a.dataset.brand;
-  const boxes = $$('input[name=brand]');
+  const boxes = $$("input[name=brand]");
+
   if (boxes.length) {
     boxes.forEach((i) => (i.checked = i.value === brand));
     updateCategoryActive(brand);
@@ -517,28 +541,31 @@ $("#brandNav").addEventListener("click", (e) => {
   } else {
     filtered = PRODUCTS.filter((p) => p.brand === brand);
     updateCategoryActive(brand);
-    applySort(); page = 1; renderGrid();
+    applySort();
+    page = 1;
+    renderGrid();
   }
 });
 
-const allBtn = document.getElementById('allCats');
-allBtn?.addEventListener('click', (e)=>{
+// all categories button
+const allBtn = document.getElementById("allCats");
+allBtn?.addEventListener("click", (e) => {
   e.preventDefault();
-  $$('input[name=brand]').forEach(i => i.checked = false); 
-  updateCategoryActive(null);                             
-  applyFilters();                                            
+  $$("input[name=brand]").forEach((i) => (i.checked = false));
+  updateCategoryActive(null);
+  applyFilters();
 });
 
-
 // sort
-$("#sort").addEventListener("change", () => {
+document.getElementById("sort").addEventListener("change", () => {
   applySort();
   renderGrid();
 });
 
 // chips from checkbox selections
-const chipBox = $("#activeChips");
-const clearBtn = $("#clearAll");
+const chipBox = document.getElementById("activeChips");
+const clearBtn = document.getElementById("clearAll");
+
 document.addEventListener("change", (e) => {
   const cb = e.target.closest(".check-list input[type=checkbox]");
   if (!cb) return;
@@ -546,21 +573,24 @@ document.addEventListener("change", (e) => {
   cb.checked ? addChip(cb) : removeChip(cb.value);
   applyFilters();
 });
+
 function addChip(cb) {
   if ([...chipBox.children].some((c) => c.dataset.val === cb.value)) return;
   const chip = document.createElement("span");
   chip.className = "chip";
   chip.dataset.val = cb.value;
-  chip.innerHTML = `${cb.value} <button aria-label="Remove">×</button>`;
+  chip.innerHTML = `${cb.value} <button aria-label="Remove" type="button">×</button>`;
   chip.querySelector("button").onclick = () => {
     uncheck(cb.value);
     applyFilters();
   };
   chipBox.appendChild(chip);
 }
+
 function removeChip(val) {
   [...chipBox.children].find((c) => c.dataset.val === val)?.remove();
 }
+
 function uncheck(val) {
   const box = document.querySelector(
     `.check-list input[value="${CSS.escape(val)}"]`
@@ -570,6 +600,7 @@ function uncheck(val) {
     removeChip(val);
   }
 }
+
 clearBtn.onclick = () => {
   $$(".check-list input[type=checkbox]").forEach((cb) => (cb.checked = false));
   chipBox.innerHTML = "";
@@ -584,8 +615,9 @@ const rangePrice = document.querySelectorAll(".range-price input");
 
 rangeInput.forEach((input) => {
   input.addEventListener("input", (e) => {
-    let minRange = parseInt(rangeInput[0].value);
-    let maxRange = parseInt(rangeInput[1].value);
+    const minRange = parseInt(rangeInput[0].value);
+    const maxRange = parseInt(rangeInput[1].value);
+
     if (maxRange - minRange < rangeMin) {
       if (e.target.className === "min")
         rangeInput[0].value = maxRange - rangeMin;
@@ -596,16 +628,16 @@ rangeInput.forEach((input) => {
       range.style.left = (minRange / rangeInput[0].max) * 100 + "%";
       range.style.right = 100 - (maxRange / rangeInput[1].max) * 100 + "%";
     }
-    $("#minPrice").value = rangePrice[0].value;
-    $("#maxPrice").value = rangePrice[1].value;
+    document.getElementById("minPrice").value = rangePrice[0].value;
+    document.getElementById("maxPrice").value = rangePrice[1].value;
     applyFilters();
   });
 });
 
 rangePrice.forEach((input) => {
   input.addEventListener("input", (e) => {
-    let minPrice = +rangePrice[0].value;
-    let maxPrice = +rangePrice[1].value;
+    const minPrice = +rangePrice[0].value;
+    const maxPrice = +rangePrice[1].value;
     if (maxPrice - minPrice >= rangeMin && maxPrice <= +rangeInput[1].max) {
       if (e.target === rangePrice[0]) {
         rangeInput[0].value = minPrice;
@@ -614,14 +646,23 @@ rangePrice.forEach((input) => {
         rangeInput[1].value = maxPrice;
         range.style.right = 100 - (maxPrice / rangeInput[1].max) * 100 + "%";
       }
-      $("#minPrice").value = minPrice;
-      $("#maxPrice").value = maxPrice;
+      document.getElementById("minPrice").value = minPrice;
+      document.getElementById("maxPrice").value = maxPrice;
       applyFilters();
     }
   });
 });
 
-// init
+// ========== Init ==========
+function renderBrandFacet() {
+  const box = document.getElementById("facetBrand");
+  if (!box) return;
+  box.innerHTML = BRANDS.map(
+    (b) =>
+      `<label class="check"><input type="checkbox" name="brand" value="${b}"><span>${b}</span></label>`
+  ).join("");
+}
+
 renderBrandFacet();
 applyFilters();
 renderRecent();

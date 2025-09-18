@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -36,13 +37,19 @@
           <span class="logo__mark">YOU</span>SHOP
           <small>Description of your<br />online store</small>
         </a>
+
         <div class="search">
           <input id="q" type="search" placeholder="Search for products…" />
-          <button id="searchBtn" class="btn btn--brand">Search</button>
+          <button id="searchBtn" class="btn btn--brand" type="button">
+            Search
+          </button>
         </div>
+
         <div class="header__links">
           <strong>7 days a week</strong><br />from 8:00 am to 5:00 pm
         </div>
+
+        <!-- Wishlist -->
         <div class="wish">
           <button
             class="wishlist"
@@ -50,7 +57,7 @@
             type="button"
             aria-label="Wishlist"
           >
-            <i class="fa-regular fa-heart"></i>
+            <i class="fa-regular fa-heart" aria-hidden="true"></i>
             <span class="wishlist__badge" id="wishQty">0</span>
           </button>
           <div class="wish__dropdown" id="wishDropdown">
@@ -58,9 +65,10 @@
           </div>
         </div>
 
+        <!-- Cart -->
         <div class="cart" aria-label="Cart">
-          <button id="cartBtn" class="cart__btn">
-            <span class="cart__icon">🛒</span>
+          <button id="cartBtn" class="cart__btn" type="button">
+            <span class="cart__icon" aria-hidden="true">🛒</span>
             <span>My cart</span>
             <span class="cart__badge" id="cartQty">0</span>
           </button>
@@ -68,7 +76,9 @@
             <div id="cartList" class="cart__list"></div>
             <div class="cart__footer">
               <div>Total: <strong id="cartTotal">$0.00</strong></div>
-              <button class="btn btn--brand btn--full">Checkout</button>
+              <button class="btn btn--brand btn--full" type="button">
+                Checkout
+              </button>
             </div>
           </div>
         </div>
@@ -78,7 +88,9 @@
     <!-- Category navbar -->
     <div class="categorybar">
       <div class="container categorybar__inner">
-        <button class="catbtn" id="allCats">☰ All Categories</button>
+        <button class="catbtn" id="allCats" type="button">
+          ☰ All Categories
+        </button>
         <ul class="brandnav" id="brandNav">
           <li><a href="#" data-brand="Apple">Apple</a></li>
           <li><a href="#" data-brand="Samsung">Samsung</a></li>
@@ -94,11 +106,11 @@
 
     <!-- Breadcrumbs -->
     <div class="container">
-      <nav class="breadcrumbs">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
         <a href="#">Home</a>
-        <span>›</span>
+        <span aria-hidden="true">›</span>
         <a href="#">Categories</a>
-        <span>›</span>
+        <span aria-hidden="true">›</span>
         <a href="#">Tablet & Laptops Accessories</a>
       </nav>
       <h2 class="page-title">Tablet & Laptops Accessories</h2>
@@ -288,24 +300,39 @@
         <div id="grid" class="grid"></div>
 
         <div class="loadmore">
-          <button id="showMore" class="btn btn--ghost">Show more</button>
+          <button id="showMore" class="btn btn--ghost" type="button">
+            Show more
+          </button>
         </div>
 
         <nav class="pagination" aria-label="Pagination">
-          <button class="page prev" id="prevPage" aria-label="Previous">
+          <button
+            class="page prev"
+            id="prevPage"
+            aria-label="Previous"
+            type="button"
+          >
             ‹
           </button>
           <div id="pageNums" class="page__nums"></div>
-          <button class="page next" id="nextPage" aria-label="Next">›</button>
+          <button
+            class="page next"
+            id="nextPage"
+            aria-label="Next"
+            type="button"
+          >
+            ›
+          </button>
         </nav>
 
-        <section class="recent">
-          <h3>Recently Viewed</h3>
-          <div id="recentRow" class="recent__row"><!-- inject here --></div>
+        <section class="recent" aria-labelledby="recent-title">
+          <h3 id="recent-title">Recently Viewed</h3>
+          <div id="recentRow" class="recent__row"></div>
         </section>
       </section>
     </div>
 
+    <!-- Footer -->
     <footer class="footer">
       <div class="container">
         <div class="keywords">
@@ -352,8 +379,10 @@
             <a class="kw" href="#">Nikeo Shoes</a>
           </div>
         </div>
+
         <div class="copy">© 2025 YouShop. For demo purposes only.</div>
       </div>
+
       <div class="container footer__top">
         <div class="newsletter">
           <h3>Subscribe now</h3>
@@ -366,6 +395,7 @@
             <button class="btn btn--brand" type="submit">➤</button>
           </form>
         </div>
+
         <div class="links">
           <div>
             <h4>Contact us</h4>
@@ -402,18 +432,20 @@
           </div>
         </div>
       </div>
+
       <div class="container footer__bottom">
         <div class="container footer__bottom-row">
           <span>© 2025 YOUSHOP. All rights reserved.</span>
-          <div class="cards">
-            <i class="fa-brands fa-bitcoin"></i>
-            <i class="fa-brands fa-paypal"></i>
-            <i class="fa-brands fa-cc-visa"></i>
+          <div class="cards" aria-label="Supported payments">
+            <i class="fa-brands fa-bitcoin" aria-hidden="true"></i>
+            <i class="fa-brands fa-paypal" aria-hidden="true"></i>
+            <i class="fa-brands fa-cc-visa" aria-hidden="true"></i>
           </div>
         </div>
       </div>
     </footer>
 
+    <!-- Toast -->
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
     <script src="app.js"></script>
