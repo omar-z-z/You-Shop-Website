@@ -1,5 +1,5 @@
 <!-- Done by Omar Zakarya Abu Zuhri-->
-<!-- PS: I did not implement the responsive design for mobile devices due to lake of time and internet, because of the hard situation here in Gaza, Sorrryy-->
+<!-- PS: I did implement the responsive design for mobile devices late due to lake of time and internet, because of the hard situation here in Gaza, Sorrryy-->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -298,6 +298,7 @@
               <option value="rating-desc">Rating: High to Low</option>
             </select>
           </div>
+          <button id="filterToggle" class="btn btn--ghost mobile-only" type="button">Filters</button>
         </div>
 
         <div id="grid" class="grid"></div>
@@ -450,7 +451,8 @@
 
     <!-- Toast -->
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
-
+    <!-- Overlay -->
+    <div id="overlay" class="overlay" hidden></div>
     <script src="app.js"></script>
   </body>
 </html>

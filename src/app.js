@@ -493,6 +493,7 @@ document.addEventListener("click", (e) => {
 
 // wishlist dropdown toggle
 document.getElementById("wishBtn").addEventListener("click", (e) => {
+  closePopups();
   e.stopPropagation();
   const dd = document.getElementById("wishDropdown");
   renderLikesDropdown();
@@ -506,6 +507,38 @@ document.addEventListener("click", (e) => {
     if (dd) dd.style.display = "none";
   }
 });
+
+// Filter drawer controls (mobile)
+const filterToggle  = document.getElementById('filterToggle');
+const filtersPanel  = document.getElementById('filters') || document.querySelector('.filters');
+const overlay       = document.getElementById('overlay');
+
+function openFilters(){
+  if(!filtersPanel) return;
+  filtersPanel.classList.add('is-open');
+  document.body.classList.add('drawer-open');
+  if (overlay) overlay.hidden = false;
+  document.body.classList.add('no-scroll');
+}
+function closeFilters(){
+  if(!filtersPanel) return;
+  filtersPanel.classList.remove('is-open');
+  document.body.classList.remove('drawer-open');
+  if (overlay) overlay.hidden = true;
+  document.body.classList.remove('no-scroll');
+}
+
+filterToggle?.addEventListener('click', openFilters);
+overlay?.addEventListener('click', closeFilters);
+document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeFilters(); });
+window.addEventListener('resize', ()=>{ if (window.innerWidth > 980) closeFilters(); });
+
+function closePopups(){
+  const w = document.getElementById('wishDropdown');
+  const c = document.getElementById('cartDropdown');
+  if (w) w.style.display = 'none';
+  if (c) c.style.display = 'none';
+}
 
 // search
 document.getElementById("searchBtn").addEventListener("click", () => {
@@ -521,6 +554,7 @@ document.getElementById("searchBtn").addEventListener("click", () => {
 
 // cart dropdown
 document.getElementById("cartBtn").addEventListener("click", () => {
+  closePopups();
   const dd = document.getElementById("cartDropdown");
   dd.style.display = dd.style.display === "block" ? "none" : "block";
 });
